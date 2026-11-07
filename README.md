@@ -57,7 +57,7 @@ apply_service/
 各リソースに同じ構成の `builder.py` と `applier.py` がある。
 
 Python 3.14以上で `apply_service` 全29種類の実行例を確認できる。
-`apply_service_by_ai` も同じ29種類に対応する。CloudFrontは `apply_service` のみ新しいパラメータ仕様を使用し、AI版は従来の `origin_domain` を使用する。
+`apply_service_by_ai` も同じ29種類に対応し、CloudFrontを含め同じパラメータ仕様を使用する。
 引数なしでは既存実装とAI版を順に実行する。実装ごとの実行も可能。
 
 ```sh
@@ -92,7 +92,7 @@ python3.14 main.py --implementation ai
 | GOOGLE_CLOUD | PUB_SUB | topic_name, project_id | — |
 | GOOGLE_CLOUD | CLOUD_RUN | service_name, region, image | allow_unauthenticated=False |
 
-`apply_service` のCloudFrontでは、各オリジンに必須文字列の `id` と `domain`、任意の `path` を指定する。
+両実装のCloudFrontでは、各オリジンに必須文字列の `id` と `domain`、任意の `path` を指定する。
 `id` は重複不可、`domain` は空文字列・URLスキーム・パスを許可しない。
 `path` を指定する場合は `/` から始まる文字列とする。`default_origin_id` は `origins` に存在するIDを指定する。
 

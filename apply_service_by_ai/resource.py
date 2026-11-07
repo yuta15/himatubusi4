@@ -20,6 +20,7 @@ class Field:
 class ResourceSpec:
     fields: Mapping[str, Field]
     execute: Executor
+    validate_values: Callable[[Mapping[str, object]], None] | None = None
 
     def __post_init__(self) -> None:
         object.__setattr__(self, "fields", MappingProxyType(dict(self.fields)))
@@ -34,4 +35,7 @@ class ResourceSpec:
                 values[name] = field.validate(value)
             except ValueError as error:
                 raise ValueError(f"{name}: {error}") from error
-        return MappingProxyType(values)
+        validated_values = MappingProxyType(values)
+        if self.validate_values is not None:
+            self.validate_values(validated_values)
+        return validated_values

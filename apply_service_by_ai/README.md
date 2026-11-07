@@ -103,6 +103,11 @@ Resultは既存実装と同じ `result` と `message` の2項目。
 
 `ApplyService(resources=...)` でリソース定義や実行関数を差し替えられる。
 検証済みの値は読み取り専用Mappingとして実行関数に渡す。
+項目間の制約は `ResourceSpec.validate_values` で、各項目の検証後、実行関数を呼ぶ前に検証する。
+CloudFrontは `distribution_name`、1件以上の `origins`、`default_origin_id` が必須で、
+`enabled` の既定値は `True`。各オリジンは `id`、`domain`、任意の `path` を持つ。
+`id` の重複、空のdomain、URLスキームやパスを含むdomainは拒否する。
+`path` は `/` で始まる文字列、`default_origin_id` は `origins` に存在するIDとする。
 検証失敗・未登録リソースはValueError、実行関数の例外は呼び出し元に伝播する。
 
 全29リソースで、入力ルール、既定値、出力、Resultの内容が既存実装と同じ。
