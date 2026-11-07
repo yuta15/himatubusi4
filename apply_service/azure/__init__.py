@@ -1,3 +1,6 @@
+from .managed_identity.builder import ManagedIdentityBuilder
+from .log_analytics.builder import LogAnalyticsBuilder
+from .event_hubs.builder import EventHubsBuilder
 from .key_vault.builder import KeyVaultBuilder
 from .container_registry.builder import ContainerRegistryBuilder
 from .service_bus.builder import ServiceBusBuilder
@@ -16,4 +19,7 @@ __all__ = [
     "KeyVaultBuilder",
     "ContainerRegistryBuilder",
     "ServiceBusBuilder",
+    "ManagedIdentityBuilder",
+    "LogAnalyticsBuilder",
+    "EventHubsBuilder",
 ]

@@ -1,3 +1,6 @@
+from .ecr.builder import EcrBuilder
+from .secrets_manager.builder import SecretsManagerBuilder
+from .cloudwatch_logs.builder import CloudWatchLogsBuilder
 from .ec2.builder import Ec2Builder
 from .sns.builder import SnsBuilder
 from .sqs.builder import SqsBuilder
@@ -14,4 +17,7 @@ __all__ = [
     "Ec2Builder",
     "SnsBuilder",
     "SqsBuilder",
+    "EcrBuilder",
+    "SecretsManagerBuilder",
+    "CloudWatchLogsBuilder",
 ]

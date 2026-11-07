@@ -2,6 +2,9 @@ from .aws import (
     AppGatewayBuilder,
     CloudFrontBuilder,
     CloudTrailBuilder,
+    CloudWatchLogsBuilder,
+    EcrBuilder,
+    SecretsManagerBuilder,
     Ec2Builder,
     S3Builder,
     SnsBuilder,
@@ -12,6 +15,9 @@ from .azure import (
     AzureFunctionsBuilder,
     ContainerRegistryBuilder,
     CosmosDbBuilder,
+    EventHubsBuilder,
+    LogAnalyticsBuilder,
+    ManagedIdentityBuilder,
     KeyVaultBuilder,
     ServiceBusBuilder,
     StorageAccountBuilder,
@@ -19,7 +25,16 @@ from .azure import (
 )
 from .base import Builder
 from .common import Provider
-from .gc import CloudRunBuilder, CloudStorageBuilder, ComputeEngineBuilder, GkeBuilder, PubSubBuilder
+from .gc import (
+    ArtifactRegistryBuilder,
+    BigQueryDatasetBuilder,
+    CloudRunBuilder,
+    CloudStorageBuilder,
+    ComputeEngineBuilder,
+    GkeBuilder,
+    PubSubBuilder,
+    SecretManagerBuilder,
+)
 
 
 class BuilderProvider:
@@ -45,6 +60,15 @@ class BuilderProvider:
             (Provider.GOOGLE_CLOUD, "CLOUD_STORAGE"): CloudStorageBuilder(),
             (Provider.GOOGLE_CLOUD, "PUB_SUB"): PubSubBuilder(),
             (Provider.GOOGLE_CLOUD, "CLOUD_RUN"): CloudRunBuilder(),
+            (Provider.AWS, "ECR"): EcrBuilder(),
+            (Provider.AWS, "SECRETS_MANAGER"): SecretsManagerBuilder(),
+            (Provider.AWS, "CLOUDWATCH_LOGS"): CloudWatchLogsBuilder(),
+            (Provider.AZURE, "MANAGED_IDENTITY"): ManagedIdentityBuilder(),
+            (Provider.AZURE, "LOG_ANALYTICS"): LogAnalyticsBuilder(),
+            (Provider.AZURE, "EVENT_HUBS"): EventHubsBuilder(),
+            (Provider.GOOGLE_CLOUD, "ARTIFACT_REGISTRY"): ArtifactRegistryBuilder(),
+            (Provider.GOOGLE_CLOUD, "SECRET_MANAGER"): SecretManagerBuilder(),
+            (Provider.GOOGLE_CLOUD, "BIGQUERY_DATASET"): BigQueryDatasetBuilder(),
         }
 
     def provide(self, provider: Provider, resource_type: str) -> Builder:

@@ -1,6 +1,6 @@
 # Apply service: 入力定義とリソース別の実行関数
 
-既存の `apply_service` と共通の20リソースに、独自の9リソースを加えた全29リソースを扱う別実装。
+既存の `apply_service` と同じ全29リソースを扱う別実装。
 入力の検証、処理内容のprint、Resultの返却までを実装している。
 
 対応リソースはAWSがS3・APP_GATEWAY・CLOUD_FRONT・CLOUD_TRAIL・EC2・SNS・SQS、
@@ -105,7 +105,7 @@ Resultは既存実装と同じ `result` と `message` の2項目。
 検証済みの値は読み取り専用Mappingとして実行関数に渡す。
 検証失敗・未登録リソースはValueError、実行関数の例外は呼び出し元に伝播する。
 
-共通の20リソースは、入力ルール、既定値、出力、Resultの内容が既存実装と同じ。
+全29リソースで、入力ルール、既定値、出力、Resultの内容が既存実装と同じ。
 Secrets Manager / Secret Managerはシークレット本体の作成を想定し、秘密値の登録は扱わない。
 検証ルールはデモ仕様で、実クラウドの全制約は再現していない。
 `AWS / APP_GATEWAY` という既存の登録キーもそのまま使う。

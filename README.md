@@ -27,7 +27,10 @@ apply_service/
 │   ├── cloud_trail/
 │   ├── ec2/
 │   ├── sns/
-│   └── sqs/
+│   ├── sqs/
+│   ├── ecr/
+│   ├── secrets_manager/
+│   └── cloudwatch_logs/
 ├── azure/
 │   ├── storage_account/
 │   ├── virtual_machine/
@@ -36,19 +39,25 @@ apply_service/
 │   ├── cosmos_db/
 │   ├── key_vault/
 │   ├── container_registry/
-│   └── service_bus/
+│   ├── service_bus/
+│   ├── managed_identity/
+│   ├── log_analytics/
+│   └── event_hubs/
 └── gc/
     ├── compute_engine/
     ├── gke/
     ├── cloud_storage/
     ├── pub_sub/
-    └── cloud_run/
+    ├── cloud_run/
+    ├── artifact_registry/
+    ├── secret_manager/
+    └── bigquery_dataset/
 ```
 
 各リソースに同じ構成の `builder.py` と `applier.py` がある。
 
-Python 3.14以上で `apply_service` 全20種類の実行例を確認できる。
-`apply_service_by_ai` は同じ20種類に加えて、各クラウド3種類ずつ追加した全29種類に対応する。
+Python 3.14以上で `apply_service` 全29種類の実行例を確認できる。
+`apply_service_by_ai` も同じ29種類に対応し、入力ルール・既定値・出力・Resultの内容を揃えている。
 引数なしでは既存実装とAI版を順に実行する。実装ごとの実行も可能。
 
 ```sh
@@ -86,7 +95,7 @@ python3.14 main.py --implementation ai
 検証ルールや数値範囲は構造を試すためのサンプル仕様で、実際のクラウドの全制約を再現するものではない。
 `AWS / APP_GATEWAY` は既存の登録キーをそのまま使用したデモ用のゲートウェイ。
 
-`apply_service_by_ai` 専用の追加リソースも、検証・print・Result返却までのデモとして動作する。
+両実装の追加リソースも、検証・print・Result返却までのデモとして動作する。
 Secrets Manager / Secret Managerでは秘密値の登録は扱わない。以下の数値範囲や選択肢もデモ仕様。
 
 | Provider | リソース | 必須パラメータ | 任意パラメータ（既定値） |
