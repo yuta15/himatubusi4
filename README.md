@@ -48,7 +48,7 @@ apply_service/
 各リソースに同じ構成の `builder.py` と `applier.py` がある。
 
 Python 3.14以上で `apply_service` 全20種類の実行例を確認できる。
-`apply_service_by_ai` は従来の11種類に対応する。
+`apply_service_by_ai` も同じ20種類に対応する。
 引数なしでは既存実装とAI版を順に実行する。実装ごとの実行も可能。
 
 ```sh

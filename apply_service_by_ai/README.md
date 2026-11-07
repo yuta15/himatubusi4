@@ -1,7 +1,12 @@
 # Apply service: 入力定義とリソース別の実行関数
 
-既存の `apply_service` と同じ11リソースを扱う別実装。
+既存の `apply_service` と同じ20リソースを扱う別実装。
 入力の検証、処理内容のprint、Resultの返却までを実装している。
+
+対応リソースはAWSがS3・APP_GATEWAY・CLOUD_FRONT・CLOUD_TRAIL・EC2・SNS・SQS、
+AzureがSTORAGE_ACCOUNT・VIRTUAL_MACHINE・AZURE_FUNCTIONS・APP_SERVICE・COSMOS_DB・KEY_VAULT・CONTAINER_REGISTRY・SERVICE_BUS、
+Google CloudがCOMPUTE_ENGINE・GKE・CLOUD_STORAGE・PUB_SUB・CLOUD_RUN。
+各リソースのパラメータと既定値は[ルートREADME](../README.md)の一覧を参照。
 
 ```sh
 python3.14 main.py --implementation ai
@@ -31,16 +36,25 @@ apply_service_by_ai/
 │   │   ├── s3.py
 │   │   ├── app_gateway.py
 │   │   ├── cloud_front.py
-│   │   └── cloud_trail.py
+│   │   ├── cloud_trail.py
+│   │   ├── ec2.py
+│   │   ├── sns.py
+│   │   └── sqs.py
 │   ├── azure/
 │   │   ├── storage_account.py
 │   │   ├── virtual_machine.py
 │   │   ├── azure_functions.py
 │   │   ├── app_service.py
-│   │   └── cosmos_db.py
+│   │   ├── cosmos_db.py
+│   │   ├── key_vault.py
+│   │   ├── container_registry.py
+│   │   └── service_bus.py
 │   └── google_cloud/
 │       ├── compute_engine.py
-│       └── gke.py
+│       ├── gke.py
+│       ├── cloud_storage.py
+│       ├── pub_sub.py
+│       └── cloud_run.py
 ├── service.py
 ├── models.py
 ├── resource.py
