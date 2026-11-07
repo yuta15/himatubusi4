@@ -1,3 +1,4 @@
+from . import ecr, secrets_manager, cloudwatch_logs
 from . import s3, app_gateway, cloud_front, cloud_trail, ec2, sns, sqs
 
 
@@ -9,6 +10,9 @@ RESOURCES = {
     "EC2": ec2.SPEC,
     "SNS": sns.SPEC,
     "SQS": sqs.SPEC,
+    "ECR": ecr.SPEC,
+    "SECRETS_MANAGER": secrets_manager.SPEC,
+    "CLOUDWATCH_LOGS": cloudwatch_logs.SPEC,
 }
 
 __all__ = ["RESOURCES"]

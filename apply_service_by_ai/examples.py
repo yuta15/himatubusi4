@@ -65,4 +65,31 @@ def example_requests() -> list[Request]:
             "service_name": "example-service", "region": "asia-northeast1",
             "image": "asia-northeast1-docker.pkg.dev/example-project/example-repo/app:latest",
         }),
+        Request(Provider.AWS, "ECR", {
+            "repository_name": "example-repository", "region": "ap-northeast-1",
+        }),
+        Request(Provider.AWS, "SECRETS_MANAGER", {
+            "secret_name": "example-secret", "region": "ap-northeast-1",
+        }),
+        Request(Provider.AWS, "CLOUDWATCH_LOGS", {
+            "log_group_name": "/example/app", "region": "ap-northeast-1",
+        }),
+        Request(Provider.AZURE, "MANAGED_IDENTITY", {
+            "identity_name": "example-identity", "location": "japaneast",
+        }),
+        Request(Provider.AZURE, "LOG_ANALYTICS", {
+            "workspace_name": "example-workspace", "location": "japaneast",
+        }),
+        Request(Provider.AZURE, "EVENT_HUBS", {
+            "namespace_name": "example-events", "location": "japaneast",
+        }),
+        Request(Provider.GOOGLE_CLOUD, "ARTIFACT_REGISTRY", {
+            "repository_name": "example-repository", "project_id": "example-project", "location": "asia-northeast1",
+        }),
+        Request(Provider.GOOGLE_CLOUD, "SECRET_MANAGER", {
+            "secret_id": "example-secret", "project_id": "example-project",
+        }),
+        Request(Provider.GOOGLE_CLOUD, "BIGQUERY_DATASET", {
+            "dataset_id": "example_dataset", "project_id": "example-project",
+        }),
     ]

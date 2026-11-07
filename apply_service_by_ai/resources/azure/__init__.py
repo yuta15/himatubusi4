@@ -1,3 +1,4 @@
+from . import managed_identity, log_analytics, event_hubs
 from . import (
     storage_account,
     virtual_machine,
@@ -19,6 +20,9 @@ RESOURCES = {
     "KEY_VAULT": key_vault.SPEC,
     "CONTAINER_REGISTRY": container_registry.SPEC,
     "SERVICE_BUS": service_bus.SPEC,
+    "MANAGED_IDENTITY": managed_identity.SPEC,
+    "LOG_ANALYTICS": log_analytics.SPEC,
+    "EVENT_HUBS": event_hubs.SPEC,
 }
 
 __all__ = ["RESOURCES"]

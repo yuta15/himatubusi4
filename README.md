@@ -48,7 +48,7 @@ apply_service/
 各リソースに同じ構成の `builder.py` と `applier.py` がある。
 
 Python 3.14以上で `apply_service` 全20種類の実行例を確認できる。
-`apply_service_by_ai` も同じ20種類に対応する。
+`apply_service_by_ai` は同じ20種類に加えて、各クラウド3種類ずつ追加した全29種類に対応する。
 引数なしでは既存実装とAI版を順に実行する。実装ごとの実行も可能。
 
 ```sh
@@ -85,3 +85,18 @@ python3.14 main.py --implementation ai
 
 検証ルールや数値範囲は構造を試すためのサンプル仕様で、実際のクラウドの全制約を再現するものではない。
 `AWS / APP_GATEWAY` は既存の登録キーをそのまま使用したデモ用のゲートウェイ。
+
+`apply_service_by_ai` 専用の追加リソースも、検証・print・Result返却までのデモとして動作する。
+Secrets Manager / Secret Managerでは秘密値の登録は扱わない。以下の数値範囲や選択肢もデモ仕様。
+
+| Provider | リソース | 必須パラメータ | 任意パラメータ（既定値） |
+|---|---|---|---|
+| AWS | ECR | repository_name, region | scan_on_push=True |
+| AWS | SECRETS_MANAGER | secret_name, region | — |
+| AWS | CLOUDWATCH_LOGS | log_group_name, region | retention_days=30（1〜365） |
+| AZURE | MANAGED_IDENTITY | identity_name, location | — |
+| AZURE | LOG_ANALYTICS | workspace_name, location | retention_days=30（30〜730） |
+| AZURE | EVENT_HUBS | namespace_name, location | sku="Standard"（Basic/Standard/Premium） |
+| GOOGLE_CLOUD | ARTIFACT_REGISTRY | repository_name, project_id, location | format="DOCKER"（DOCKER/MAVEN/NPM） |
+| GOOGLE_CLOUD | SECRET_MANAGER | secret_id, project_id | — |
+| GOOGLE_CLOUD | BIGQUERY_DATASET | dataset_id, project_id | location="asia-northeast1" |

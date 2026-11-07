@@ -1,11 +1,14 @@
 # Apply service: 入力定義とリソース別の実行関数
 
-既存の `apply_service` と同じ20リソースを扱う別実装。
+既存の `apply_service` と共通の20リソースに、独自の9リソースを加えた全29リソースを扱う別実装。
 入力の検証、処理内容のprint、Resultの返却までを実装している。
 
 対応リソースはAWSがS3・APP_GATEWAY・CLOUD_FRONT・CLOUD_TRAIL・EC2・SNS・SQS、
 AzureがSTORAGE_ACCOUNT・VIRTUAL_MACHINE・AZURE_FUNCTIONS・APP_SERVICE・COSMOS_DB・KEY_VAULT・CONTAINER_REGISTRY・SERVICE_BUS、
 Google CloudがCOMPUTE_ENGINE・GKE・CLOUD_STORAGE・PUB_SUB・CLOUD_RUN。
+さらにAWSにECR・SECRETS_MANAGER・CLOUDWATCH_LOGS、
+AzureにMANAGED_IDENTITY・LOG_ANALYTICS・EVENT_HUBS、
+Google CloudにARTIFACT_REGISTRY・SECRET_MANAGER・BIGQUERY_DATASETを追加している。
 各リソースのパラメータと既定値は[ルートREADME](../README.md)の一覧を参照。
 
 ```sh
@@ -39,7 +42,10 @@ apply_service_by_ai/
 │   │   ├── cloud_trail.py
 │   │   ├── ec2.py
 │   │   ├── sns.py
-│   │   └── sqs.py
+│   │   ├── sqs.py
+│   │   ├── ecr.py
+│   │   ├── secrets_manager.py
+│   │   └── cloudwatch_logs.py
 │   ├── azure/
 │   │   ├── storage_account.py
 │   │   ├── virtual_machine.py
@@ -48,13 +54,19 @@ apply_service_by_ai/
 │   │   ├── cosmos_db.py
 │   │   ├── key_vault.py
 │   │   ├── container_registry.py
-│   │   └── service_bus.py
+│   │   ├── service_bus.py
+│   │   ├── managed_identity.py
+│   │   ├── log_analytics.py
+│   │   └── event_hubs.py
 │   └── google_cloud/
 │       ├── compute_engine.py
 │       ├── gke.py
 │       ├── cloud_storage.py
 │       ├── pub_sub.py
-│       └── cloud_run.py
+│       ├── cloud_run.py
+│       ├── artifact_registry.py
+│       ├── secret_manager.py
+│       └── bigquery_dataset.py
 ├── service.py
 ├── models.py
 ├── resource.py
@@ -93,6 +105,7 @@ Resultは既存実装と同じ `result` と `message` の2項目。
 検証済みの値は読み取り専用Mappingとして実行関数に渡す。
 検証失敗・未登録リソースはValueError、実行関数の例外は呼び出し元に伝播する。
 
-入力ルール、既定値、出力、Resultの内容は既存実装と同じ。
+共通の20リソースは、入力ルール、既定値、出力、Resultの内容が既存実装と同じ。
+Secrets Manager / Secret Managerはシークレット本体の作成を想定し、秘密値の登録は扱わない。
 検証ルールはデモ仕様で、実クラウドの全制約は再現していない。
 `AWS / APP_GATEWAY` という既存の登録キーもそのまま使う。
