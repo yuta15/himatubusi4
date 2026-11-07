@@ -14,7 +14,12 @@ def example_requests() -> list[Request]:
             "name": "example-gateway", "target_url": "https://example.com", "port": 443,
         }),
         Request(Provider.AWS, "CLOUD_FRONT", {
-            "origin_domain": "example.com", "enabled": True,
+            "distribution_name": "example-distribution",
+            "origins": [
+                {"id": "web", "domain": "example.com"},
+                {"id": "assets", "domain": "assets.example.com", "path": "/static"},
+            ],
+            "default_origin_id": "web",
         }),
         Request(Provider.AWS, "CLOUD_TRAIL", {
             "trail_name": "example-trail", "bucket_name": "audit-bucket", "multi_region": True,

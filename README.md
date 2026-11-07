@@ -57,7 +57,7 @@ apply_service/
 各リソースに同じ構成の `builder.py` と `applier.py` がある。
 
 Python 3.14以上で `apply_service` 全29種類の実行例を確認できる。
-`apply_service_by_ai` も同じ29種類に対応し、入力ルール・既定値・出力・Resultの内容を揃えている。
+`apply_service_by_ai` も同じ29種類に対応する。CloudFrontは `apply_service` のみ新しいパラメータ仕様を使用し、AI版は従来の `origin_domain` を使用する。
 引数なしでは既存実装とAI版を順に実行する。実装ごとの実行も可能。
 
 ```sh
@@ -73,7 +73,7 @@ python3.14 main.py --implementation ai
 |---|---|---|---|
 | AWS | S3 | bucket_name（3〜63文字）, region | versioning=False |
 | AWS | APP_GATEWAY | name, target_url（http/https）, port（1〜65535） | — |
-| AWS | CLOUD_FRONT | origin_domain（スキーム・パスなし） | enabled=True |
+| AWS | CLOUD_FRONT | distribution_name, origins（1件以上）, default_origin_id | enabled=True |
 | AWS | CLOUD_TRAIL | trail_name, bucket_name | multi_region=True |
 | AWS | EC2 | name, region, instance_type | — |
 | AWS | SNS | topic_name, region | fifo=False |
@@ -91,6 +91,10 @@ python3.14 main.py --implementation ai
 | GOOGLE_CLOUD | CLOUD_STORAGE | bucket_name, location | versioning=False |
 | GOOGLE_CLOUD | PUB_SUB | topic_name, project_id | — |
 | GOOGLE_CLOUD | CLOUD_RUN | service_name, region, image | allow_unauthenticated=False |
+
+`apply_service` のCloudFrontでは、各オリジンに必須文字列の `id` と `domain`、任意の `path` を指定する。
+`id` は重複不可、`domain` は空文字列・URLスキーム・パスを許可しない。
+`path` を指定する場合は `/` から始まる文字列とする。`default_origin_id` は `origins` に存在するIDを指定する。
 
 検証ルールや数値範囲は構造を試すためのサンプル仕様で、実際のクラウドの全制約を再現するものではない。
 `AWS / APP_GATEWAY` は既存の登録キーをそのまま使用したデモ用のゲートウェイ。
