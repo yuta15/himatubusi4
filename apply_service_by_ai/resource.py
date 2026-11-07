@@ -35,11 +35,3 @@ class ResourceSpec:
             except ValueError as error:
                 raise ValueError(f"{name}: {error}") from error
         return MappingProxyType(values)
-
-
-def simulated(message_template: str) -> Executor:
-    """外部通信なしの実行関数を作る。実処理はこの関数と差し替えられる。"""
-    def execute(values: Mapping[str, object]) -> Result:
-        return Result(True, message_template.format_map(values))
-
-    return execute

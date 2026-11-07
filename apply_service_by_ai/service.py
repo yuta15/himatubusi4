@@ -1,9 +1,8 @@
-from collections.abc import Callable, Mapping
+from collections.abc import Mapping
 from types import MappingProxyType
 
-from . import aws, azure, google_cloud
+from .resources import aws, azure, google_cloud
 from .models import Provider, Request, Result
-from .output import format_resource
 from .resource import ResourceSpec
 
 type ResourceKey = tuple[Provider, str]
@@ -25,11 +24,8 @@ class ApplyService:
     def __init__(
         self,
         resources: Mapping[ResourceKey, ResourceSpec] | None = None,
-        *,
-        output: Callable[[str], None] = print,
     ) -> None:
         self._resources = MappingProxyType(dict(default_resources() if resources is None else resources))
-        self._output = output
 
     def apply(self, request: Request) -> Result:
         if not isinstance(request.resource_type, str):
@@ -43,6 +39,4 @@ class ApplyService:
             raise ValueError("parameters must be a mapping")
 
         values = spec.validate(request.parameters)
-        result = spec.execute(values)
-        self._output(format_resource(request.provider, resource_type, values))
-        return result
+        return spec.execute(values)

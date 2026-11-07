@@ -1,11 +1,10 @@
-# Apply service: 定義と関数による実装
+# Apply service: 入力定義とリソース別の実行関数
 
-既存の `apply_service` と独立した別実装。全11リソースの入力ルール・既定値・
-printの形式・Resultの内容を維持し、SDKや外部APIを使わずに動く。
+既存の `apply_service` と同じ11リソースを扱う別実装。
+入力の検証、処理内容のprint、Resultの返却までを実装している。
 
 ```sh
-python3.14 -m apply_service_by_ai
-python3.14 -B -m unittest apply_service_by_ai.test_service -v
+python3.14 main.py --implementation ai
 ```
 
 ```python
@@ -13,52 +12,73 @@ from apply_service_by_ai import ApplyService, Provider, Request
 
 service = ApplyService()
 result = service.apply(Request(
-    provider=Provider.AWS,
-    resource_type="S3",
-    parameters={"bucket_name": "example-bucket", "region": "ap-northeast-1"},
+    Provider.AWS,
+    "S3",
+    {"bucket_name": "example-bucket", "region": "ap-northeast-1"},
 ))
 ```
 
-## 設計
+## 構成
 
-`ApplyService` が「選択 → 検証・正規化 → 実行 → 共通出力」を担当する。
-各クラウドのファイルには `ResourceSpec` を登録する。Specは項目の定義と実行関数の組。
-データを表す `Request`・`Result`・`Field`・`ResourceSpec` にdataclassを使い、
-処理を進めるサービスは通常のクラスにした。
+`ApplyService` がリソース定義を選択し、検証済みの値を専用の実行関数に渡す。
+リソース定義は入力項目と実行関数の組で、各リソースのファイルにまとめている。
+各クラウドの `__init__.py` が定義を `RESOURCES` として集約する。
 
-現状の模擬実行は「検証したパラメータを表示してResultを返す」ため、
-リソースごとのBuilder/Applierクラスを作る必要がない。
-必須値、選択肢、範囲、既定値を宣言し、同じ仕組みで検証する。
-クラウド固有の検証関数は必要な項目だけに適用する。
+```text
+apply_service_by_ai/
+├── resources/
+│   ├── aws/
+│   │   ├── s3.py
+│   │   ├── app_gateway.py
+│   │   ├── cloud_front.py
+│   │   └── cloud_trail.py
+│   ├── azure/
+│   │   ├── storage_account.py
+│   │   ├── virtual_machine.py
+│   │   ├── azure_functions.py
+│   │   ├── app_service.py
+│   │   └── cosmos_db.py
+│   └── google_cloud/
+│       ├── compute_engine.py
+│       └── gke.py
+├── service.py
+├── models.py
+├── resource.py
+├── validation.py
+├── output.py
+├── examples.py
+└── __init__.py
+```
 
 ```python
-"S3": ResourceSpec(
+SPEC = ResourceSpec(
     fields={
         "bucket_name": Field(string_length(3, 63)),
         "region": Field(text),
         "versioning": Field(boolean, default=False),
     },
-    execute=simulated("Simulated S3 bucket creation: {bucket_name}"),
+    execute=create_s3,
 )
 ```
 
-## 差し替え
+各実行関数にはリソース固有の処理を書く。
+現在はAPI呼び出しを置く箇所で引数をprintし、Resultを返している。
+SDKを使う場合は、その関数内のprintをAPI呼び出しに置き換える。
+共通の表示形式は `output.py` の `format_resource()` を利用する。
 
-`ResourceSpec.execute` は検証済みの読み取り専用Mappingを受け取り、Resultを返す関数。
-専用処理が必要なリソースは、この関数だけを差し替えられる。
-引数間の検証が必要なら、実行関数の冒頭で行ってから外部への操作に進める。
-認証が必要になったら、認証用オブジェクトを受け取る関数や通常のクラスのメソッドを登録できる。
-現段階では認証処理は実装していない。
+- `resources/<クラウド>/<リソース>.py`: リソース定義と専用の実行関数。
+- `resource.py`・`validation.py`: 必須項目、型、範囲、既定値などの共通検証。
+- `service.py`: リソースの選択、検証、実行。
+- `models.py`: Provider、Request、Result。
 
-`ApplyService(resources=...)` で登録内容全体を差し替えられる。
-`output=...` に文字列を受け取る関数を渡すと、表示先も差し替えられる。
-たとえば `ApplyService(output=messages.append)` なら標準出力の代わりにリストへ保存する。
+クライアント層、認証、SDK連携、リソースIDの生成は追加していない。
+Resultは既存実装と同じ `result` と `message` の2項目。
+サービス自身はprintせず、実行関数が出力を担当する。
 
-検証失敗・未登録リソースはValueError、実行中の例外は呼び出し元へ伝播する。
-入力の余分な項目は既存実装と同様に無視する。出力には検証した項目だけを使う。
+`ApplyService(resources=...)` でリソース定義や実行関数を差し替えられる。
+検証済みの値は読み取り専用Mappingとして実行関数に渡す。
+検証失敗・未登録リソースはValueError、実行関数の例外は呼び出し元に伝播する。
+
+入力ルール、既定値、出力、Resultの内容は既存実装と同じ。
 検証ルールはデモ仕様で、実クラウドの全制約は再現していない。
-既存の `AWS / APP_GATEWAY` という登録名も維持している。
-
-この方式はMappingベースなので、専用クラスの属性に比べ、実行関数内の項目名を静的型検査で
-確認しにくい。実処理や引数間の制約が複雑になったリソースでは、検証済みの設定を型付きの
-オブジェクトへ変換する設計が候補になる。全リソースを先回りして複雑にしない方針とした。
+`AWS / APP_GATEWAY` という既存の登録キーもそのまま使う。
